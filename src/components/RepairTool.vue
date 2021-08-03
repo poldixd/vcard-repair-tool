@@ -66,12 +66,12 @@ export default {
 
       this.uploadedFile = this.$refs.file.files[0]
 
-      if (!['text/directory', 'text/vcard'].includes(this.uploadedFile.type)) {
+      if (!['text/directory', 'text/vcard', 'text/x-vcard'].includes(this.uploadedFile.type)) {
         this.error = 'Die hochgeladene Datei ist kein elektronische Visitenkarte'
         return
       }
 
-      if (this.uploadedFile.size <= 2000) {
+      if (this.uploadedFile.size <= 100) {
         this.error = 'Die hochgeladene Datei ist zu klein'
         return
       }
@@ -89,6 +89,11 @@ export default {
     },
 
     convertVcard() {
+        if (!this.vcardAlt.includes('VERSION:3.0')) {
+          this.error = 'Die hochgeladene Datei enthält kein elektronische Visitenkarte'
+          return
+        }
+
         this.vcardParsed = vCard.parse(this.vcardAlt)
 
         this.vcardParsed.url = this.vcardParsed.url.map((url) => ({
@@ -99,7 +104,7 @@ export default {
     },
 
     downloadVcard() {
-      const blob = new Blob([this.vcardNeu], {type: "text/vcard"});
+      const blob = new Blob([this.vcardNeu], {type: "text/x-vcard"});
       saveAs(blob, this.newFilename);
     },
 
