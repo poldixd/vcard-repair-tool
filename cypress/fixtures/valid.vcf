@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+SOURCE:https://foo.bar
+PROFILE:VCARD
+FN;CHARSET=utf-8:FooBar
+N;CHARSET=utf-8:FooBar
+EMAIL;TYPE=internet;CHARSET=utf-8:foo@foo.bar
+URL:https://foo.bar
+REV:2021-08-02T12:51:57Z
+END:VCARD
