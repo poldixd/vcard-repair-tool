@@ -4,6 +4,21 @@ on:
     branches:
       - master
 jobs:
+  cypress-run:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install and Build 🔧
+        run: |
+          npm install
+          npm run-script build
+
+      - name: Cypress run 🧪
+        uses: cypress-io/github-action@v2
+        with:
+          command: npm run test:e2e:run
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -16,6 +31,7 @@ jobs:
         run: |
           npm install
           npm run-script build
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:

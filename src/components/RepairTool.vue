@@ -2,6 +2,15 @@
   <div class="bg-white overflow-hidden shadow rounded-lg">
 
     <div class="px-4 py-5 sm:p-6">
+
+      <div
+        v-if="error"
+        class="text-red-600 border border-red-600 bg-red-200 text-center py-4 px-2 rounded-md mb-6"
+      >
+        <strong>Fehler:</strong>
+        <p>{{ error }}</p>
+      </div>
+
       <div
         class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
         @dragover="dragover"
@@ -17,12 +26,11 @@
           accept=".vcard"
         />
 
-        <div class="block cursor-pointer">
-          <label for="assetsFieldHandle" class="flex flex-col space-y-4 items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer">
-            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            <div>Dateien hierher ziehen oder <span class="underline">hier</span> klicken</div>
-          </label>
-        </div>
+        <label for="assetsFieldHandle" class="flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer">
+          <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          <div>Datei mit Ziehen-und-Ablegen hochladen oder <span class="underline">hier</span> klicken</div>
+          <div class="text-sm">Nur .vcf Dateien</div>
+        </label>
       </div>
 
       <div v-if="vcardNeu" class="my-16 flex items-center justify-center">
@@ -44,33 +52,63 @@ export default {
 
   data() {
     return {
+      vcardAlt: null,
       vcardNeu: null,
       vcardParsed: null,
       uploadedFile: null,
+      error: null,
     }
   },
 
   methods: {
     loadUploadedFile() {
-      this.uploadedFile = this.$refs.file.files[0];
-      const reader = new FileReader();
+      this.restart()
+
+      this.uploadedFile = this.$refs.file.files[0]
+
+      if (!['text/directory', 'text/vcard'].includes(this.uploadedFile.type)) {
+        this.error = 'Die hochgeladene Datei ist kein elektronische Visitenkarte'
+        return
+      }
+
+      if (this.uploadedFile.size <= 2000) {
+        this.error = 'Die hochgeladene Datei ist zu klein'
+        return
+      }
+
+      this.error = null
+
+      const reader = new FileReader()
 
       reader.onload = (event) => {
-        this.vcardParsed = vCard.parse(event.target.result)
+        this.vcardAlt = event.target.result
+        this.convertVcard()
+      }
+
+      reader.readAsText(this.uploadedFile)
+    },
+
+    convertVcard() {
+        this.vcardParsed = vCard.parse(this.vcardAlt)
 
         this.vcardParsed.url = this.vcardParsed.url.map((url) => ({
           value: url.value
         }))
 
         this.vcardNeu = vCard.generate(this.vcardParsed)
-      }
-
-      reader.readAsText(this.uploadedFile);
     },
 
     downloadVcard() {
       const blob = new Blob([this.vcardNeu], {type: "text/vcard"});
       saveAs(blob, this.newFilename);
+    },
+
+    restart() {
+      this.vcardAlt = null
+      this.vcardNeu = null
+      this.vcardParsed = null
+      this.uploadedFile = null
+      this.error = null
     },
 
     dragover(event) {
