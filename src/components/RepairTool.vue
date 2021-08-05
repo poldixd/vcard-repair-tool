@@ -23,7 +23,7 @@
           class="w-px h-px opacity-0 overflow-hidden absolute"
           @change="loadUploadedFile"
           ref="file"
-          accept=".vcard"
+          accept=".vcf"
         />
 
         <label for="assetsFieldHandle" class="flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 cursor-pointer">
