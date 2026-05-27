@@ -11,22 +11,22 @@ describe('Repair Tool', () => {
     })
 
     it('checks it the uploaded file has the correct mime type', () => {
-        cy.get('input[type="file"]').attachFile('text_file.txt')
+        cy.uploadFixture('text_file.txt', 'text/plain')
         cy.contains('Die hochgeladene Datei ist kein elektronische Visitenkarte')
     })
 
     it('checks it the uploaded vcf/file is to small', () => {
-        cy.get('input[type="file"]').attachFile('small.vcf')
+        cy.uploadFixture('small.vcf', 'text/vcard')
         cy.contains('Die hochgeladene Datei ist zu klein')
     })
 
     it('checks it the uploaded vcf is valid', () => {
-        cy.get('input[type="file"]').attachFile('invalid.vcf')
+        cy.uploadFixture('invalid.vcf', 'text/vcard')
         cy.contains('Die hochgeladene Datei enthält kein elektronische Visitenkarte')
     })
 
     it('checks it the uploaded vcf can converted', () => {
-        cy.get('input[type="file"]').attachFile('valid.vcf')
+        cy.uploadFixture('valid.vcf', 'text/vcard')
 
         cy.contains('Download Vcard')
 
