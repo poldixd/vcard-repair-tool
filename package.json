@@ -10,16 +10,16 @@
     "test:e2e:run": "vue-cli-service test:e2e --headless"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.21",
     "core-js": "^3.6.5",
     "file-saver": "^2.0.5",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.3.0",
     "vcard-parser": "^1.0.0",
     "vue": "^3.5.18"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.0",
+    "@tailwindcss/postcss": "^4.3.0",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-e2e-cypress": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
